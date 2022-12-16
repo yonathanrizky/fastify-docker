@@ -8,7 +8,7 @@ COPY package.json .
 RUN npm install -g nodemon && npm install
 
 #install depedency
-# RUN npm install --save knex mysql2 jsonwebtoken bcrypt @fastify/helmet @fastify/cors
+# RUN npm install --save knex mysql2 jsonwebtoken bcrypt @fastify/helmet @fastify/cors @fastify/formbody @fastify/multipart dotenv
 
 RUN npm audit fix --force
 
@@ -19,5 +19,4 @@ EXPOSE 3000
 VOLUME [ "/app/node_modules" ]
 
 CMD ["npm", "run", "dev"]
-# CMD ["node", "server.js"]
 # CMD [ "npm", "start" ]
