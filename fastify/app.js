@@ -1,5 +1,7 @@
 const Fastify = require("fastify");
+require("dotenv").config();
 global.knex = require("./knex/knex.js");
+
 const build = async () => {
   const fastify = Fastify({
     logger: true,
@@ -7,7 +9,11 @@ const build = async () => {
     bodyLimit: 1048576 * 10,
   });
 
-  await fastify.register(require("fastify-xml-body-parser"));
+  await fastify.register(require("@fastify/formbody"));
+  await fastify.register(require("@fastify/multipart"), {
+    attachFieldsToBody: "keyValues",
+  });
+
   await fastify.register(require("@fastify/cors"), { origin: "*" });
   await fastify.register(require("@fastify/helmet"), {
     contentSecurityPolicy: {
@@ -24,7 +30,12 @@ const build = async () => {
     },
   });
 
-  await fastify.register(require("./routes/api"), { prefix: "api/v1" });
+  fastify.register(require("@fastify/jwt"), {
+    secret: process.env.JWT_SECRET,
+  });
+
+  await fastify.register(require("./middleware/auth"));
+  await fastify.register(require("./routes/api"), { prefix: "api" });
 
   fastify.setNotFoundHandler((request, reply) => {
     fastify.log.debug(`Route not found: ${request.method}:${request.raw.url}`);
