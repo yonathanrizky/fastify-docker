@@ -9,6 +9,7 @@ const build = async () => {
     bodyLimit: 1048576 * 10,
   });
 
+  /** handle data from body */
   await fastify.register(require("@fastify/formbody"));
   await fastify.register(require("@fastify/multipart"), {
     attachFieldsToBody: "keyValues",
@@ -30,11 +31,14 @@ const build = async () => {
     },
   });
 
-  fastify.register(require("@fastify/jwt"), {
+  /** jwt auth */
+  await fastify.register(require("@fastify/jwt"), {
     secret: process.env.JWT_SECRET,
   });
 
   await fastify.register(require("./middleware/auth"));
+
+  /** route */
   await fastify.register(require("./routes/api"), { prefix: "api" });
 
   fastify.setNotFoundHandler((request, reply) => {
