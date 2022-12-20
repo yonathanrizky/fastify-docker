@@ -19,7 +19,7 @@ const apiRoutes = async (app, options) => {
 
       api.register(require("./example"), { prefix: "example" });
       app.register(require("./person"), { prefix: "person" });
-      app.register(require("./user"), { prefix: "user" });
+      app.register(require("./user"), { prefix: "users" });
       done();
     },
     {
